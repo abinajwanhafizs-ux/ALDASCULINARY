@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aldas Culinary Foods | Lumpia Ayam Suwir Mercon</title>
+<meta name="description" content="Lumpia ayam suwir mercon renyah dan pedas. Rp2.500 per pcs, minimal order 2 pcs. Pesan lewat WhatsApp.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Fraunces:ital,opsz,wght@1,9..144,600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --cream:#f8f0e2;
+    --cream-2:#efe2cc;
+    --ink:#3a1f12;
+    --chili:#c9580e;
+    --chili-dark:#97400a;
+    --mustard:#f0b14a;
+    --muted:#7a5d4a;
+    --radius:18px;
+    --font:"Bricolage Grotesque", "Trebuchet MS", Arial, sans-serif;
+    --serif:"Fraunces", Georgia, serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+    font-family:var(--font);
+    background:var(--cream);
+    color:var(--ink);
+    overflow-x:hidden;
+    line-height:1.6;
+}
+body.loading{overflow:hidden}
+
+/* tekstur kertas halus */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:100;
+    opacity:.06;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+a{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:1140px;margin:auto;padding:0 6%}
+
+/* ---------- LOADER ---------- */
+#loader{
+    position:fixed;inset:0;z-index:1000;
+    display:grid;place-items:center;
+}
+.ld-panel{
+    position:absolute;left:0;width:100%;height:50%;
+    background:var(--cream);
+    transition:transform .9s cubic-bezier(.77,0,.18,1);
+}
+.ld-top{top:0;border-bottom:3px solid var(--ink)}
+.ld-bot{bottom:0;border-top:3px solid var(--ink)}
+
+.ld-content{
+    position:relative;z-index:2;
+    width:min(320px,80%);
+    text-align:center;
+    transition:opacity .3s ease, transform .4s ease;
+}
+.ld-brand{
+    font-size:46px;font-weight:800;letter-spacing:-2px;line-height:1;
+}
+.ld-brand i{font-family:var(--serif);color:var(--chili);font-weight:600}
+.ld-sub{
+    margin-top:6px;font-size:11px;font-weight:800;
+    letter-spacing:3px;color:var(--muted);
+}
+
+.ld-bar{
+    margin-top:30px;
+    height:18px;
+    border:3px solid var(--ink);
+    border-radius:8px;
+    background:var(--cream-2);
+    overflow:hidden;
+    position:relative;
+}
+.ld-fill{
+    height:100%;width:0;
+    background:
+        repeating-linear-gradient(
+            -45deg,
+            var(--chili) 0 10px,
+            var(--chili-dark) 10px 20px
+        );
+    background-size:28px 28px;
+    animation:stripe .8s linear infinite;
+}
+@keyframes stripe{to{background-position:28px 0}}
+
+.ld-info{
+    margin-top:12px;
+    display:flex;justify-content:space-between;
+    font-size:12px;font-weight:800;letter-spacing:1px;
+}
+.ld-info span:first-child{color:var(--muted)}
+
+#loader.done .ld-content{opacity:0;transform:scale(.96)}
+#loader.done .ld-top{transform:translateY(-101%)}
+#loader.done .ld-bot{transform:translateY(101%)}
+
+/* ---------- PROGRESS SCROLL ---------- */
+.scroll-progress{
+    position:fixed;top:0;left:0;height:4px;width:0;
+    background:var(--chili);
+    z-index:60;
+}
+
+/* ---------- NAV ---------- */
+.nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(248,240,226,.88);
+    backdrop-filter:blur(10px);
+    border-bottom:2px solid var(--ink);
+}
+.nav-in{
+    max-width:1140px;margin:auto;padding:14px 6%;
+    display:flex;align-items:center;justify-content:space-between;
+}
+.brand{font-weight:800;font-size:22px;letter-spacing:-.5px}
+.brand i{font-family:var(--serif);font-weight:600;color:var(--chili)}
+.nav-links{display:flex;align-items:center;gap:26px;font-size:14px;font-weight:700}
+.nav-links a:not(.pill){position:relative}
+.nav-links a:not(.pill)::after{
+    content:"";position:absolute;left:0;bottom:-3px;height:2px;width:0;
+    background:var(--chili);transition:width .3s;
+}
+.nav-links a:not(.pill):hover::after{width:100%}
+
+.pill{
+    background:var(--ink);color:var(--cream);
+    padding:10px 18px;border-radius:40px;
+    transition:.25s;
+}
+.pill:hover{background:var(--chili);transform:translateY(-2px)}
+
+/* ---------- BUTTON ---------- */
+.btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:15px 24px;border-radius:12px;
+    font-weight:800;font-size:15px;
+    border:2px solid var(--ink);
+    transition:transform .2s, box-shadow .2s, background .2s;
+    cursor:pointer;font-family:inherit;
+}
+.btn-red{
+    background:var(--chili);color:#fff;
+    box-shadow:4px 4px 0 var(--ink);
+}
+.btn-red:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.btn-red:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn-line{background:transparent}
+.btn-line:hover{background:var(--ink);color:var(--cream)}
+
+/* ---------- HERO ---------- */
+.hero{padding:70px 0 90px}
+.hero-grid{
+    display:grid;grid-template-columns:1.05fr .95fr;
+    gap:60px;align-items:center;
+}
+.tag{
+    display:inline-block;
+    background:var(--mustard);
+    border:2px solid var(--ink);
+    padding:6px 14px;border-radius:30px;
+    font-size:12px;font-weight:800;letter-spacing:.8px;
+    transform:rotate(-2deg);
+    margin-bottom:22px;
+}
+.hero h1{
+    font-size:clamp(46px,7vw,86px);
+    line-height:.96;
+    letter-spacing:-3px;
+    font-weight:800;
+}
+.hero h1 em{
+    font-family:var(--serif);
+    font-style:italic;
+    font-weight:600;
+    color:var(--chili);
+    letter-spacing:-2px;
+    position:relative;
+    display:inline-block;
+    z-index:0;
+}
+.hero h1 em::after{
+    content:"";position:absolute;left:0;right:0;bottom:2px;height:10px;
+    background:var(--mustard);z-index:-1;
+    transform:scaleX(0);transform-origin:left;
+}
+body.ready .hero h1 em::after{
+    animation:underline 1s .5s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes underline{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.hero p.lead{
+    max-width:470px;margin-top:24px;
+    color:var(--muted);font-size:17px;
+}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px}
+
+.photo-area{position:relative;display:flex;justify-content:center}
+.photo-frame{
+    width:min(440px,100%);
+    aspect-ratio:1/1;
+}
+.photo-frame img{width:100%;height:100%;object-fit:contain;display:block;transition:transform .8s}
+.photo-frame:hover img{transform:scale(1.04)}
+
+.sticker{
+    position:absolute;
+    right:-4px;top:-8px;
+    width:118px;height:118px;
+    z-index:3;
+    display:grid;place-items:center;
+    background:var(--mustard);
+    border:3px solid var(--ink);
+    border-radius:var(--radius);
+    box-shadow:5px 5px 0 var(--ink);
+    transform:rotate(8deg);
+    text-align:center;
+}
+.sticker b{
+    font-size:22px;font-weight:800;line-height:1.05;letter-spacing:-.5px;
+}
+.sticker small{
+    display:block;
+    font-size:11px;font-weight:800;letter-spacing:1.5px;
+}
+
+/* ---------- MARQUEE ---------- */
+.band{
+    background:var(--chili);color:#fff;
+    border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);
+    overflow:hidden;
+    transform:rotate(-1deg);
+    margin:0 -2%;
+}
+.band-track{display:flex;width:max-content;animation:slide 28s linear infinite}
+.band span{
+    padding:16px 30px;font-weight:800;font-size:15px;letter-spacing:1.5px;
+    white-space:nowrap;
+}
+.band span::after{content:"✺";margin-left:60px;color:var(--mustard)}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* ---------- SECTION ---------- */
+section{padding:100px 0}
+.eyebrow{
+    font-size:13px;font-weight:800;letter-spacing:2px;
+    color:var(--chili);margin-bottom:12px;
+}
+.title{
+    font-size:clamp(34px,5vw,56px);
+    line-height:1;letter-spacing:-2px;font-weight:800;
+}
+.title em{font-family:var(--serif);font-weight:600;font-style:italic;color:var(--chili)}
+
+/* ---------- PRODUK ---------- */
+.produk-grid{
+    display:grid;grid-template-columns:.95fr 1.05fr;
+    gap:60px;align-items:start;
+}
+.produk-img{
+    border:3px solid var(--ink);
+    border-radius:var(--radius);          /* KOTAK (sebelumnya 50% = lingkaran) */
+    overflow:hidden;
+    background:var(--cream-2);
+    box-shadow:10px 10px 0 var(--mustard);
+    position:relative;
+    position:sticky;top:100px;
+}
+.produk-img img{
+    width:100%;aspect-ratio:1/1;
+    padding:0;                            /* sebelumnya 3% */
+    object-fit:cover;                     /* gambar memenuhi kotak; ganti ke contain kalau terpotong */
+    background:#fffaf1;display:block;transition:transform .8s;
+}
+.produk-img:hover img{transform:scale(1.05)}
+.produk-img .flag{
+    position:absolute;left:14px;top:14px;z-index:2;   /* sebelumnya 18% (posisi untuk lingkaran) */
+    background:var(--ink);color:var(--cream);
+    padding:7px 12px;border-radius:8px;
+    font-size:11px;font-weight:800;letter-spacing:1px;
+}
+
+.produk-info h3{margin:6px 0 12px}
+.produk-info > p{color:var(--muted);max-width:480px}
+
+.price{
+    display:flex;align-items:baseline;gap:8px;margin:24px 0 8px;
+}
+.price strong{font-size:48px;letter-spacing:-2px;color:var(--chili);line-height:1}
+.price span{color:var(--muted);font-weight:700}
+
+.heat{margin:22px 0 22px;max-width:360px}
+.heat-top{
+    display:flex;justify-content:space-between;
+    font-size:12px;font-weight:800;letter-spacing:1px;margin-bottom:9px;
+}
+.heat-bar{display:flex;gap:6px}
+.heat-bar i{
+    flex:1;height:14px;border-radius:5px;
+    border:2px solid var(--ink);background:transparent;
+    position:relative;overflow:hidden;
+}
+.heat-bar i::before{
+    content:"";position:absolute;inset:0;
+    background:var(--chili);
+    transform:scaleX(0);transform-origin:left;
+    transition:transform .5s ease;
+}
+.heat.show .heat-bar i.on::before{transform:scaleX(1)}
+.heat.show .heat-bar i:nth-child(1)::before{transition-delay:.1s}
+.heat.show .heat-bar i:nth-child(2)::before{transition-delay:.3s}
+.heat.show .heat-bar i:nth-child(3)::before{transition-delay:.5s}
+.heat.show .heat-bar i:nth-child(4)::before{transition-delay:.7s}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:26px}
+.chips small{font-size:12px;font-weight:800;letter-spacing:1px;color:var(--muted);margin-right:4px}
+.chips span{
+    border:2px solid var(--ink);border-radius:30px;
+    padding:4px 13px;font-size:13px;font-weight:700;
+    transition:.2s;
+}
+.chips span:hover{background:var(--mustard);transform:rotate(-3deg)}
+
+/* ---------- KALKULATOR ---------- */
+.calc{
+    background:#fffaf1;
+    border:3px solid var(--ink);
+    border-radius:var(--radius);
+    padding:24px;
+    box-shadow:6px 6px 0 var(--ink);
+    max-width:480px;
+}
+.calc-title{
+    font-size:13px;font-weight:800;letter-spacing:1.5px;
+    color:var(--chili);margin-bottom:16px;
+}
+.stepper{
+    display:flex;align-items:center;gap:12px;
+}
+.stepper button{
+    width:46px;height:46px;flex-shrink:0;
+    border:2px solid var(--ink);border-radius:12px;
+    background:var(--cream);
+    font-size:24px;font-weight:800;line-height:1;
+    cursor:pointer;font-family:inherit;
+    transition:.15s;
+}
+.stepper button:hover{background:var(--mustard)}
+.stepper button:active{transform:scale(.92)}
+.stepper input{
+    flex:1;min-width:0;height:46px;
+    text-align:center;
+    font-size:22px;font-weight:800;font-family:inherit;
+    border:2px solid var(--ink);border-radius:12px;
+    background:#fff;color:var(--ink);
+    -moz-appearance:textfield;
+}
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stepper input:focus{outline:3px solid var(--mustard)}
+.stepper .unit{font-weight:700;color:var(--muted)}
+
+.presets{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.presets button{
+    border:2px solid var(--ink);border-radius:30px;
+    background:transparent;padding:5px 14px;
+    font-size:13px;font-weight:800;font-family:inherit;
+    cursor:pointer;transition:.15s;
+}
+.presets button:hover,.presets button.active{background:var(--ink);color:var(--cream)}
+
+.min-note{
+    margin-top:12px;
+    font-size:12px;font-weight:800;letter-spacing:.5px;
+    color:var(--muted);
+}
+
+.calc-total{
+    margin-top:20px;padding-top:18px;
+    border-top:2px dashed var(--ink);
+    display:flex;justify-content:space-between;align-items:baseline;
+}
+.calc-total span{font-weight:700;color:var(--muted)}
+.calc-total strong{font-size:34px;letter-spacing:-1px;color:var(--chili);display:inline-block}
+.calc-total strong.bump{animation:bump .3s ease}
+@keyframes bump{50%{transform:scale(1.12)}}
+.calc .btn{width:100%;justify-content:center;margin-top:18px}
+
+/* ---------- CARA PESAN ---------- */
+.steps-section{background:var(--ink);color:var(--cream)}
+.steps-section .title{color:var(--cream)}
+.steps{
+    margin-top:50px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+}
+.step{
+    border:2px solid rgba(248,240,226,.25);
+    border-radius:var(--radius);
+    padding:30px;
+    transition:transform .35s, border-color .35s, background .35s, opacity .7s;
+}
+.step.show:nth-child(1){transform:rotate(-1.2deg)}
+.step.show:nth-child(2){transform:rotate(.8deg)}
+.step.show:nth-child(3){transform:rotate(-.6deg)}
+.step.show:hover{transform:rotate(0) translateY(-6px);border-color:var(--mustard);background:rgba(241,180,52,.06)}
+.step .num{
+    font-family:var(--serif);font-style:italic;font-weight:600;
+    font-size:54px;color:var(--mustard);line-height:1;margin-bottom:14px;
+}
+.step h4{font-size:20px;margin-bottom:8px}
+.step p{color:#b9aca1;font-size:15px}
+
+/* ---------- CTA ---------- */
+.cta{padding:90px 0}
+.cta-box{
+    background:var(--mustard);
+    border:3px solid var(--ink);
+    border-radius:26px;
+    padding:56px;
+    box-shadow:10px 10px 0 var(--ink);
+    display:flex;align-items:center;justify-content:space-between;gap:30px;
+}
+.cta-box h2{
+    font-size:clamp(32px,5vw,54px);
+    line-height:1;letter-spacing:-2px;font-weight:800;
+}
+.cta-box h2 em{font-family:var(--serif);font-style:italic;font-weight:600;color:var(--chili-dark)}
+.cta-box p{margin-top:12px;max-width:430px;font-weight:500}
+
+/* ---------- KONTAK ---------- */
+.kontak-grid{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:60px;align-items:start;
+}
+.kontak-grid > div:first-child p{color:var(--muted);margin-top:16px;max-width:420px}
+.contacts{display:flex;flex-direction:column;gap:14px}
+.contact{
+    display:flex;align-items:center;gap:16px;
+    padding:18px 20px;
+    border:2px solid var(--ink);border-radius:14px;
+    background:var(--cream);
+    transition:transform .25s, box-shadow .25s, background .25s;
+}
+.contact:hover{
+    transform:translate(-3px,-3px);
+    box-shadow:5px 5px 0 var(--ink);
+    background:#fff8ec;
+}
+.contact .ic{
+    width:44px;height:44px;flex-shrink:0;
+    display:grid;place-items:center;
+    background:var(--chili);color:#fff;
+    border-radius:10px;font-size:18px;
+}
+.contact strong{display:block;font-size:16px}
+.contact small{color:var(--muted);font-size:13px}
+.contact .go{margin-left:auto;font-weight:800;transition:transform .25s}
+.contact:hover .go{transform:translateX(5px)}
+
+/* ---------- FOOTER ---------- */
+footer{
+    border-top:3px solid var(--ink);
+    padding:26px 6%;text-align:center;
+    font-size:13px;color:var(--muted);
+}
+footer strong{color:var(--ink)}
+
+/* ---------- FLOAT ---------- */
+.wa{
+    position:fixed;right:18px;bottom:18px;z-index:60;
+    display:flex;align-items:center;gap:8px;
+    background:#25D366;color:#073b1b;
+    border:2px solid var(--ink);
+    padding:12px 18px;border-radius:40px;
+    font-weight:800;font-size:14px;
+    box-shadow:3px 3px 0 var(--ink);
+    transition:.2s;
+}
+.wa:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+
+.to-top{
+    position:fixed;right:18px;bottom:76px;z-index:60;
+    width:46px;height:46px;
+    display:grid;place-items:center;
+    background:var(--cream);
+    border:2px solid var(--ink);border-radius:50%;
+    font-size:20px;font-weight:800;
+    box-shadow:3px 3px 0 var(--ink);
+    cursor:pointer;font-family:inherit;
+    opacity:0;transform:translateY(14px);pointer-events:none;
+    transition:.3s;
+}
+.to-top.show{opacity:1;transform:none;pointer-events:auto}
+.to-top:hover{background:var(--mustard)}
+
+/* ---------- REVEAL ---------- */
+.reveal{
+    opacity:0;transform:translateY(28px);
+    transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1);
+}
+.reveal.show{opacity:1;transform:none}
+.reveal.d1{transition-delay:.12s}
+.reveal.d2{transition-delay:.24s}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:860px){
+    .nav-links a:not(.pill){display:none}
+    .hero{padding:44px 0 70px}
+    .hero-grid,.produk-grid,.kontak-grid{grid-template-columns:1fr;gap:50px}
+    .produk-img{position:relative;top:0}
+    .sticker{right:-2px;top:-6px;width:100px;height:100px}
+    .sticker b{font-size:19px}
+    .steps{grid-template-columns:1fr}
+    .step.show:nth-child(n){transform:none}
+    .cta-box{flex-direction:column;align-items:flex-start;padding:38px 26px}
+    section{padding:75px 0}
+}
+@media(max-width:520px){
+    .hero h1{letter-spacing:-2px}
+    .hero-actions .btn{width:100%;justify-content:center}
+    .cta-box .btn{width:auto}
+    .wa span{display:none}
+    .wa{padding:14px;font-size:20px}
+    .calc{padding:20px}
+    .ld-brand{font-size:40px}
+}
+
+@media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}
+    .heat-bar i.on::before{transform:scaleX(1)}
+    .hero h1 em::after{transform:scaleX(1)}
+}
+</style>
+</head>
+
+<body class="loading">
+
+<!-- LOADER -->
+<div id="loader" aria-live="polite">
+    <div class="ld-panel ld-top"></div>
+    <div class="ld-panel ld-bot"></div>
+
+    <div class="ld-content">
+        <div class="ld-brand">Aldas<i>.</i></div>
+        <div class="ld-sub">CULINARY FOODS</div>
+
+        <div class="ld-bar"><div class="ld-fill" id="ldFill"></div></div>
+
+        <div class="ld-info">
+            <span id="ldText">Menyiapkan bumbu…</span>
+            <span id="ldPct">0%</span>
+        </div>
+    </div>
+</div>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- NAV -->
+<header class="nav">
+    <div class="nav-in">
+        <a href="#home" class="brand">Aldas<i>.</i></a>
+        <nav class="nav-links">
+            <a href="#produk">Produk</a>
+            <a href="#cara-pesan">Cara Pesan</a>
+            <a href="#kontak">Kontak</a>
+            <a href="https://wa.me/6288224033276" data-wa target="_blank" rel="noopener" class="pill">Pesan</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" id="home">
+    <div class="wrap hero-grid">
+
+        <div>
+            <span class="tag reveal">CAMILAN PEDAS FAVORIT</span>
+
+            <h1 class="reveal d1">
+                Renyah di luar,<br>
+                <em>mercon</em> di dalam.
+            </h1>
+
+            <p class="lead reveal d2">
+                Lumpia ayam suwir dengan bumbu gurih dan pedas yang pas.
+                Digoreng renyah, enak dimakan kapan saja.
+            </p>
+
+            <div class="hero-actions reveal d2">
+                <a href="#pesan" class="btn btn-red">Pesan Sekarang →</a>
+                <a href="#produk" class="btn btn-line">Lihat Produk</a>
+            </div>
+        </div>
+
+        <div class="photo-area reveal d1">
+            <div class="sticker">
+                <b><small>CUMA</small>Rp2.500</b>
+            </div>
+
+            <div class="photo-frame">
+                <img src="logo.jpg" alt="Logo Lumpia Suwirku"
+                     onerror="this.src='https://placehold.co/800x800/efe2cc/c9580e?text=LUMPIA+MERCON';">
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- BAND -->
+<div class="band" aria-hidden="true">
+    <div class="band-track">
+        <span>LUMPIA AYAM SUWIR MERCON</span><span>RENYAH &amp; GURIH</span><span>PEDAS BIKIN NAGIH</span><span>RP2.500 / PCS</span><span>ALDAS CULINARY FOODS</span>
+        <span>LUMPIA AYAM SUWIR MERCON</span><span>RENYAH &amp; GURIH</span><span>PEDAS BIKIN NAGIH</span><span>RP2.500 / PCS</span><span>ALDAS CULINARY FOODS</span>
+    </div>
+</div>
+
+<!-- PRODUK -->
+<section id="produk">
+    <div class="wrap produk-grid">
+
+        <div class="produk-img reveal">
+            <div class="flag">BEST SELLER</div>
+            <img src="lumpia.jpg" alt="Logo Lumpia Suwirku"
+                 onerror="this.src='https://placehold.co/900x900/efe2cc/c9580e?text=LUMPIA+AYAM+SUWIR+MERCON';">
+        </div>
+
+        <div class="produk-info reveal d1">
+            <div class="eyebrow">MENU UTAMA</div>
+            <h3 class="title" style="font-size:clamp(32px,4.5vw,46px)">Lumpia Ayam <em>Suwir</em> Mercon</h3>
+
+            <p>
+                Kulit lumpia renyah, isian ayam suwir berbumbu pedas.
+                Cocok untuk ngemil sendiri, bareng teman, atau stok di rumah.
+            </p>
+
+            <div class="price">
+                <strong>Rp2.500</strong><span>/ pcs</span>
+            </div>
+
+            <div class="heat" id="heat">
+                <div class="heat-top"><span>LEVEL PEDAS</span><span>4 / 5</span></div>
+                <div class="heat-bar">
+                    <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i>
+                </div>
+            </div>
+
+            <div class="chips">
+                <small>COCOK BUAT</small>
+                <span>Ngemil</span>
+                <span>Kumpul teman</span>
+                <span>Stok rumah</span>
+                <span>Bekal</span>
+            </div>
+
+            <!-- KALKULATOR -->
+            <div class="calc" id="pesan">
+                <div class="calc-title">HITUNG PESANANMU</div>
+
+                <div class="stepper">
+                    <button type="button" id="minus" aria-label="Kurangi">−</button>
+                    <input type="number" id="qty" value="10" min="2" max="999" inputmode="numeric" aria-label="Jumlah pcs">
+                    <button type="button" id="plus" aria-label="Tambah">+</button>
+                    <span class="unit">pcs</span>
+                </div>
+
+                <div class="presets" id="presets">
+                    <button type="button" data-q="5">5</button>
+                    <button type="button" data-q="10" class="active">10</button>
+                    <button type="button" data-q="20">20</button>
+                    <button type="button" data-q="50">50</button>
+                </div>
+
+                <p class="min-note">Minimal order 2 pcs</p>
+
+                <div class="calc-total">
+                    <span>Total</span>
+                    <strong id="total">Rp25.000</strong>
+                </div>
+
+                <a href="https://wa.me/6288224033276" id="calcOrder" target="_blank" rel="noopener" class="btn btn-red">Pesan via WhatsApp →</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- CARA PESAN -->
+<section class="steps-section" id="cara-pesan">
+    <div class="wrap">
+        <div class="reveal">
+            <div class="eyebrow" style="color:var(--mustard)">CARA PESAN</div>
+            <h2 class="title">Gampang, tinggal <em style="color:var(--mustard)">tiga langkah.</em></h2>
+        </div>
+
+        <div class="steps">
+            <div class="step reveal">
+                <div class="num">1</div>
+                <h4>Tentukan jumlah</h4>
+                <p>Atur jumlah pcs di kalkulator (minimal 2 pcs), total harga langsung terlihat.</p>
+            </div>
+            <div class="step reveal d1">
+                <div class="num">2</div>
+                <h4>Kirim lewat WhatsApp</h4>
+                <p>Pesan otomatis sudah terisi. Tinggal kirim dan kami konfirmasi stok.</p>
+            </div>
+            <div class="step reveal d2">
+                <div class="num">3</div>
+                <h4>Lumpia siap</h4>
+                <p>Pesananmu disiapkan, tinggal dinikmati selagi renyah.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+    <div class="wrap">
+        <div class="cta-box reveal">
+            <div>
+                <h2>Pedasnya <em>sudah</em><br>menunggu.</h2>
+                <p>Mau pesan Lumpia Ayam Suwir Mercon? Langsung chat kami lewat WhatsApp.</p>
+            </div>
+            <a href="https://wa.me/6288224033276" data-wa target="_blank" rel="noopener" class="btn btn-red">Chat WhatsApp →</a>
+        </div>
+    </div>
+</section>
+
+<!-- KONTAK -->
+<section id="kontak" style="padding-top:20px">
+    <div class="wrap kontak-grid">
+
+        <div class="reveal">
+            <div class="eyebrow">HUBUNGI KAMI</div>
+            <h2 class="title">Mau pesan<br>atau <em>tanya?</em></h2>
+            <p>Hubungi Aldas Culinary Foods lewat WhatsApp atau Instagram, atau cek lokasi kami di Google Maps.</p>
+        </div>
+
+        <div class="contacts reveal d1">
+            <a class="contact" href="https://wa.me/6288224033276" data-wa target="_blank" rel="noopener">
+                <div class="ic">☎</div>
+                <div><strong>WhatsApp</strong><small>0882-2403-3276</small></div>
+                <span class="go">→</span>
+            </a>
+
+            <a class="contact" href="https://www.instagram.com/aldasculinaryfoods/" target="_blank" rel="noopener">
+                <div class="ic">◎</div>
+                <div><strong>Instagram</strong><small>@aldasculinaryfoods</small></div>
+                <span class="go">→</span>
+            </a>
+
+            <a class="contact" target="_blank" rel="noopener"
+               href="https://www.google.com/maps/search/?api=1&query=Jl.%20Hartono%20Raya%20RT.002%2FRW.006%2C%20Klp.%20Indah%2C%20Kec.%20Tangerang%2C%20Kota%20Tangerang%2C%20Banten">
+                <div class="ic">⌖</div>
+                <div><strong>Lokasi</strong><small>Jl. Hartono Raya, Tangerang</small></div>
+                <span class="go">→</span>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+</main>
+
+<footer>
+    © 2026 <strong>Aldas Culinary Foods</strong>. All Rights Reserved.
+</footer>
+
+<button class="to-top" id="toTop" aria-label="Kembali ke atas">↑</button>
+
+<a href="https://wa.me/6288224033276" data-wa target="_blank" rel="noopener" class="wa" aria-label="Pesan melalui WhatsApp">
+    ☎ <span>Pesan</span>
+</a>
+
+<script>
+/* =========================================================
+   KONFIGURASI
+========================================================= */
+const WA_NUMBER = "6288224033276";
+const PRICE = 2500;
+const MIN_QTY = 2;   // minimal order
+const MAX_QTY = 999;
+
+const waLink = (text) => "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(text);
+const rupiah = (n) => "Rp" + n.toLocaleString("id-ID");
+
+const DEFAULT_TEXT = "Halo kak, saya mau pesan Lumpia Ayam Suwir Mercon. Harga Rp2.500 per pcs (minimal order 2 pcs). Apakah masih tersedia?";
+document.querySelectorAll("[data-wa]").forEach(a => a.href = waLink(DEFAULT_TEXT));
+
+
+/* =========================================================
+   LOADER
+========================================================= */
+const loader = document.getElementById("loader");
+const ldFill = document.getElementById("ldFill");
+const ldPct  = document.getElementById("ldPct");
+const ldText = document.getElementById("ldText");
+
+const stages = [
+    [0,  "Menyiapkan bumbu…"],
+    [25, "Menggulung lumpia…"],
+    [55, "Menggoreng renyah…"],
+    [85, "Menaburkan pedas…"],
+    [100,"Siap disantap!"]
+];
+
+let pageLoaded = false;
+let finished = false;
+let progress = 0;
+const startTime = Date.now();
+
+window.addEventListener("load", () => { pageLoaded = true; });
+
+function initReveal(){
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if(e.isIntersecting){
+                e.target.classList.add("show");
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: .15 });
+
+    document.querySelectorAll(".reveal, .heat").forEach(el => io.observe(el));
+}
+
+function finishLoading(){
+    if(finished) return;
+    finished = true;
+
+    ldFill.style.width = "100%";
+    ldPct.textContent = "100%";
+    ldText.textContent = stages[stages.length - 1][1];
+
+    setTimeout(() => {
+        loader.classList.add("done");
+        document.body.classList.remove("loading");
+        document.body.classList.add("ready");
+        initReveal();
+        setTimeout(() => loader.remove(), 1100);
+    }, 350);
+}
+
+function tick(){
+    if(finished) return;
+
+    const minTimePassed = Date.now() - startTime > 1600;
+    const limit = (pageLoaded && minTimePassed) ? 100 : 92;
+
+    progress += (limit - progress) * 0.06 + (limit === 100 ? 0.4 : 0);
+    if(progress > 100) progress = 100;
+
+    ldFill.style.width = progress + "%";
+    ldPct.textContent = Math.floor(progress) + "%";
+
+    for(let i = stages.length - 1; i >= 0; i--){
+        if(progress >= stages[i][0]){
+            ldText.textContent = stages[i][1];
+            break;
+        }
+    }
+
+    if(progress >= 99.5 && limit === 100){
+        finishLoading();
+    }else{
+        requestAnimationFrame(tick);
+    }
+}
+
+if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    finishLoading();
+}else{
+    requestAnimationFrame(tick);
+}
+
+/* pengaman: jangan pernah menahan pengunjung lebih dari 6 detik */
+setTimeout(finishLoading, 6000);
+
+
+/* =========================================================
+   KALKULATOR PESANAN
+========================================================= */
+const qtyInput = document.getElementById("qty");
+const totalEl  = document.getElementById("total");
+const orderBtn = document.getElementById("calcOrder");
+const presets  = document.querySelectorAll("#presets button");
+
+function getQty(){
+    let q = parseInt(qtyInput.value, 10);
+    if(isNaN(q) || q < MIN_QTY) q = MIN_QTY;
+    if(q > MAX_QTY) q = MAX_QTY;
+    return q;
+}
+
+function updateCalc(){
+    const q = getQty();
+    const total = q * PRICE;
+
+    totalEl.textContent = rupiah(total);
+    totalEl.classList.remove("bump");
+    void totalEl.offsetWidth;
+    totalEl.classList.add("bump");
+
+    presets.forEach(b => b.classList.toggle("active", Number(b.dataset.q) === q));
+
+    orderBtn.href = waLink(
+        "Halo kak, saya mau pesan Lumpia Ayam Suwir Mercon sebanyak " + q +
+        " pcs (Rp2.500/pcs, total " + rupiah(total) + "). Apakah masih tersedia?"
+    );
+}
+
+document.getElementById("minus").addEventListener("click", () => {
+    qtyInput.value = Math.max(MIN_QTY, getQty() - 1);
+    updateCalc();
+});
+document.getElementById("plus").addEventListener("click", () => {
+    qtyInput.value = Math.min(MAX_QTY, getQty() + 1);
+    updateCalc();
+});
+qtyInput.addEventListener("input", updateCalc);
+qtyInput.addEventListener("blur", () => { qtyInput.value = getQty(); updateCalc(); });
+presets.forEach(b => b.addEventListener("click", () => {
+    qtyInput.value = b.dataset.q;
+    updateCalc();
+}));
+
+updateCalc();
+
+
+/* =========================================================
+   SCROLL: PROGRESS BAR + TOMBOL KE ATAS
+========================================================= */
+const bar = document.getElementById("scrollProgress");
+const toTop = document.getElementById("toTop");
+
+function onScroll(){
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+    bar.style.width = pct + "%";
+    toTop.classList.toggle("show", window.scrollY > 600);
+}
+window.addEventListener("scroll", onScroll, { passive: true });
+onScroll();
+
+toTop.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+</script>
+
+</body>
+</html>
